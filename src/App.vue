@@ -1,85 +1,76 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import { ref } from 'vue'
+import UserList from './components/UserList.vue'
+
+interface User {
+  name: {
+    first: string
+    last: string
+  }
+  gender: string
+  picture: {
+    large: string
+  }
+  login: {
+    uuid: string
+  }
+  location: {
+    city: string
+    state: string
+    country: string
+  }
+  email: string
+  phone: string
+}
+
+const usersList = ref<User[]>([])
+const loading = ref(false)
+
+const sendUsers = async () => {
+  loading.value = true
+  const response = await fetch('https://randomuser.me/api/?results=5')
+  const data = await response.json()
+  usersList.value = [...usersList.value, ...data.results]
+  loading.value = false
+}
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
+  <div class="MainContainer">
+    <h2>User list</h2>
+    <UserList :userList="usersList" :loading="loading" />
+    <button @click="sendUsers" type="button">Show more</button>
+  </div>
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
+.MainContainer {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+.MainContainer button {
+  padding: 10px 0px;
+  width: 600px;
+  background-color: teal;
+  border: none;
+  color: white;
+  font-size: 20px;
+  border-radius: 0px 0px 5px 5px;
+  cursor: pointer;
+  transition: 0.5s;
 }
 
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
+.MainContainer h2 {
+  color: white;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
+@media (max-width: 800px) {
+  .MainContainer button {
+    width: 100%;
   }
 }
 </style>
