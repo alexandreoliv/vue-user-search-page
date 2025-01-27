@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps } from 'vue'
+import { defineProps, defineEmits } from 'vue'
 
 interface User {
   picture: {
@@ -15,10 +15,18 @@ interface User {
 defineProps<{
   userItem: User
 }>()
+
+const emit = defineEmits<{
+  (event: 'click'): void
+}>()
+
+const onCardClick = () => {
+  emit('click')
+}
 </script>
 
 <template>
-  <div class="UserCard">
+  <div class="UserCard" @click="onCardClick">
     <img :src="userItem.picture.thumbnail" alt="User Thumbnail" />
     <div class="userCardInfo">
       <p>{{ userItem.name.first }} {{ userItem.name.last }}</p>

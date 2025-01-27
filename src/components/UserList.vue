@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps } from 'vue'
+import { defineProps, defineEmits } from 'vue'
 import Loader from './Loader.vue'
 import UserCard from './UserCard.vue'
 
@@ -14,6 +14,14 @@ defineProps<{
   userList: User[]
   loading: boolean
 }>()
+
+const emit = defineEmits<{
+  (event: 'userClick', user: User): void
+}>()
+
+const handleUserClick = (user: User) => {
+  emit('userClick', user)
+}
 </script>
 
 <template>
@@ -22,6 +30,7 @@ defineProps<{
       v-for="user in userList"
       :key="user.login.uuid"
       :userItem="user"
+      @click="handleUserClick(user)"
     />
     <p class="msg" v-if="userList.length === 0 && !loading">The list is currently empty</p>
     <Loader v-if="loading" />

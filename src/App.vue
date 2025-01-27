@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import UserList from './components/UserList.vue'
+import UserDetails from './components/UserDetails.vue'
 
 interface User {
   name: {
@@ -28,6 +29,7 @@ const filteredUsers = ref<User[]>([])
 const loading = ref(false)
 const searchText = ref('')
 const genderFilter = ref('')
+const selectedUser = ref<User | null>(null)
 
 const sendUsers = async () => {
   loading.value = true
@@ -47,6 +49,10 @@ const filterUsers = () => {
     return matchesName && matchesGender
   })
 }
+
+const showUserDetails = (user: User) => {
+  selectedUser.value = user
+}
 </script>
 
 <template>
@@ -65,8 +71,10 @@ const filterUsers = () => {
         <option value="female">Female</option>
       </select>
     </div>
-    <UserList :userList="filteredUsers" :loading="loading" />
+    <UserList :userList="filteredUsers" :loading="loading" @userClick="showUserDetails" />
     <button @click="sendUsers" type="button">Show more</button>
+
+    <UserDetails :selectedUser="selectedUser" />
   </div>
 </template>
 
