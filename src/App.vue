@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import UserList from './components/UserList.vue'
 import UserDetails from './components/UserDetails.vue'
 
@@ -33,6 +33,16 @@ const genderFilter = ref('')
 const selectedUser = ref<User | null>(null)
 const showFavouritesOnly = ref(false)
 
+// Watch the state and save to sessionStorage
+watch([searchText, genderFilter, showFavouritesOnly, selectedUser], () => {
+  sessionStorage.setItem('searchText', searchText.value)
+  sessionStorage.setItem('genderFilter', genderFilter.value)
+  sessionStorage.setItem('showFavouritesOnly', JSON.stringify(showFavouritesOnly.value))
+  sessionStorage.setItem('selectedUser', JSON.stringify(selectedUser.value))
+  sessionStorage.setItem('usersList', JSON.stringify(usersList.value))
+  sessionStorage.setItem('filteredUsers', JSON.stringify(filteredUsers.value))
+}, { deep: true })
+
 const sendUsers = async () => {
   loading.value = true
   const response = await fetch('https://randomuser.me/api/?results=5')
@@ -41,17 +51,49 @@ const sendUsers = async () => {
    // Ensure each user has the 'favourite' property
    const usersWithFavourite = data.results.map((user: any) => ({
     ...user,
-    favourite: false, // Add the 'favourite' property here
+    favourite: false
   }))
 
   usersList.value = [...usersList.value, ...usersWithFavourite]
+  sessionStorage.setItem('usersList', JSON.stringify(usersList.value))
   filterUsers() // Reapply filters to include the newly added users
   loading.value = false
 }
 
-// Load the first 5 users when the component is mounted
 onMounted(() => {
-  sendUsers()
+  // Restore state from sessionStorage if available
+  const savedSearchText = sessionStorage.getItem('searchText')
+  if (savedSearchText) {
+    searchText.value = savedSearchText
+  }
+
+  const savedGenderFilter = sessionStorage.getItem('genderFilter')
+  if (savedGenderFilter) {
+    genderFilter.value = savedGenderFilter
+  }
+
+  const savedShowFavouritesOnly = sessionStorage.getItem('showFavouritesOnly')
+  if (savedShowFavouritesOnly) {
+    showFavouritesOnly.value = JSON.parse(savedShowFavouritesOnly)
+  }
+
+  const savedSelectedUser = sessionStorage.getItem('selectedUser')
+  if (savedSelectedUser) {
+    selectedUser.value = JSON.parse(savedSelectedUser)
+  }
+
+  const savedUsersList = sessionStorage.getItem('usersList')
+  if (savedUsersList) {
+    usersList.value = JSON.parse(savedUsersList)
+  }
+
+  const savedFilteredUsers = sessionStorage.getItem('filteredUsers')
+  if (savedFilteredUsers) {
+    filteredUsers.value = JSON.parse(savedFilteredUsers)
+  }
+
+   // Only fetch new users if no users are saved in sessionStorage
+   savedUsersList ? filterUsers() : sendUsers()
 })
 
 const toggleFavourite = (user: User) => {
