@@ -102,6 +102,7 @@ const toggleFavourite = (user: User) => {
     u.login.uuid === user.login.uuid ? { ...u, favourite: u.favourite } : u
   )
   usersList.value = updatedUsers
+  sessionStorage.setItem('usersList', JSON.stringify(usersList.value))
   filterUsers() // Reapply filters
 }
 
