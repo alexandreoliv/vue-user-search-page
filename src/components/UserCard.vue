@@ -35,12 +35,20 @@ const toggleFavourite = (userItem: User) => {
   <div class="UserCard" @click="onCardClick">
     <img :src="userItem.picture.thumbnail" alt="User Thumbnail" />
     <div class="userCardInfo">
-      <p>{{ userItem.name.first }} {{ userItem.name.last }}</p>
+      <div class="user-name">
+        <p>
+          <span>{{ userItem.name.first }} {{ userItem.name.last }}</span>
+          <!-- @click.stop prevents the UserDetails component from opening when clicking the Favourite button -->
+          <button
+            @click.stop="toggleFavourite(userItem)"
+            :class="{ favourite: userItem.favourite }"
+            aria-label="Toggle favourite"
+          >
+            <span :class="userItem.favourite ? 'filled-star' : 'empty-star'">★</span>
+          </button>
+        </p>
+      </div>
       <p class="email">{{ userItem.email }}</p>
-      <!-- @click.stop prevents the UserDetails component from opening when clicking the Favourite button -->
-      <button @click.stop="toggleFavourite(userItem)" :class="{ favourite: userItem.favourite }">
-        {{ userItem.favourite ? 'Unfavourite' : 'Favourite' }}
-      </button>
     </div>
   </div>
 </template>
@@ -69,14 +77,25 @@ const toggleFavourite = (userItem: User) => {
   margin-right: 10px;
 }
 
-button.favourite {
-  background-color: gold;
+button {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 24px;
+  cursor: pointer;
+  display: inline;
+  color: inherit;
 }
 
-button {
-  padding: 5px 10px;
-  margin-top: 5px;
-  font-size: 12px;
-  cursor: pointer;
+button span {
+  display: inline-block;
+}
+
+.filled-star {
+  color: gold;
+}
+
+.empty-star {
+  color: #ccc;
 }
 </style>
