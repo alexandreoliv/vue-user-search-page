@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import UserList from './components/UserList.vue'
 import UserDetails from './components/UserDetails.vue'
 
@@ -39,6 +39,11 @@ const sendUsers = async () => {
   filterUsers() // Reapply filters to include the newly added users
   loading.value = false
 }
+
+// Load the first 5 users when the component is mounted
+onMounted(() => {
+  sendUsers()
+})
 
 const filterUsers = () => {
   const text = searchText.value.toLowerCase()
