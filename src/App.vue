@@ -22,6 +22,7 @@ interface User {
   }
   email: string
   phone: string
+  favourite: boolean
 }
 
 const usersList = ref<User[]>([])
@@ -30,12 +31,20 @@ const loading = ref(false)
 const searchText = ref('')
 const genderFilter = ref('')
 const selectedUser = ref<User | null>(null)
+const showFavouritesOnly = ref(false)
 
 const sendUsers = async () => {
   loading.value = true
   const response = await fetch('https://randomuser.me/api/?results=5')
   const data = await response.json()
-  usersList.value = [...usersList.value, ...data.results]
+
+   // Ensure each user has the 'favourite' property
+   const usersWithFavourite = data.results.map((user: any) => ({
+    ...user,
+    favourite: false, // Add the 'favourite' property here
+  }))
+
+  usersList.value = [...usersList.value, ...usersWithFavourite]
   filterUsers() // Reapply filters to include the newly added users
   loading.value = false
 }
@@ -45,13 +54,23 @@ onMounted(() => {
   sendUsers()
 })
 
+const toggleFavourite = (user: User) => {
+  // Find the user in the usersList and toggle the favourite property
+  const updatedUsers = usersList.value.map(u =>
+    u.login.uuid === user.login.uuid ? { ...u, favourite: u.favourite } : u
+  )
+  usersList.value = updatedUsers
+  filterUsers() // Reapply filters
+}
+
 const filterUsers = () => {
   const text = searchText.value.toLowerCase()
   filteredUsers.value = usersList.value.filter((user) => {
     const fullName = `${user.name.first} ${user.name.last}`.toLowerCase()
     const matchesName = fullName.includes(text)
     const matchesGender = genderFilter.value === '' || user.gender === genderFilter.value
-    return matchesName && matchesGender
+    const matchesFavourites = !showFavouritesOnly.value || user.favourite
+    return matchesName && matchesGender && matchesFavourites
   })
 }
 
@@ -75,8 +94,17 @@ const showUserDetails = (user: User) => {
         <option value="male">Male</option>
         <option value="female">Female</option>
       </select>
+      <label>
+        <input type="checkbox" v-model="showFavouritesOnly" @change="filterUsers" />
+        Show Only Favourites
+      </label>
     </div>
-    <UserList :userList="filteredUsers" :loading="loading" @userClick="showUserDetails" />
+    <UserList
+      :userList="filteredUsers"
+      :loading="loading"
+      @userClick="showUserDetails"
+      @favouriteToggle="toggleFavourite"
+    />
     <button @click="sendUsers" type="button">Show more</button>
 
     <UserDetails :selectedUser="selectedUser" />

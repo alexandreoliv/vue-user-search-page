@@ -10,6 +10,7 @@ interface User {
     last: string
   }
   email: string
+  favourite: boolean
 }
 
 defineProps<{
@@ -18,10 +19,15 @@ defineProps<{
 
 const emit = defineEmits<{
   (event: 'click'): void
+  (event: 'favouriteToggle', user: User): void
 }>()
 
 const onCardClick = () => {
   emit('click')
+}
+
+const toggleFavourite = (userItem: User) => {
+  emit('favouriteToggle', userItem)
 }
 </script>
 
@@ -31,6 +37,10 @@ const onCardClick = () => {
     <div class="userCardInfo">
       <p>{{ userItem.name.first }} {{ userItem.name.last }}</p>
       <p class="email">{{ userItem.email }}</p>
+      <!-- @click.stop prevents the UserDetails component from opening when clicking the Favourite button -->
+      <button @click.stop="toggleFavourite(userItem)" :class="{ favourite: userItem.favourite }">
+        {{ userItem.favourite ? 'Unfavourite' : 'Favourite' }}
+      </button>
     </div>
   </div>
 </template>
@@ -57,5 +67,16 @@ const onCardClick = () => {
   height: 50px;
   border-radius: 50%;
   margin-right: 10px;
+}
+
+button.favourite {
+  background-color: gold;
+}
+
+button {
+  padding: 5px 10px;
+  margin-top: 5px;
+  font-size: 12px;
+  cursor: pointer;
 }
 </style>
