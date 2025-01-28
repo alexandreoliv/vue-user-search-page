@@ -124,33 +124,44 @@ const showUserDetails = (user: User) => {
 
 <template>
   <div class="MainContainer">
-    <h2>User list</h2>
-    <div class="search-container">
-      <input
-        type="text"
-        v-model="searchText"
-        placeholder="Search by first or last name"
-        @input="filterUsers"
-      />
-      <select v-model="genderFilter" @change="filterUsers">
-        <option value="">All Genders</option>
-        <option value="male">Male</option>
-        <option value="female">Female</option>
-      </select>
-      <label>
-        <input type="checkbox" v-model="showFavouritesOnly" @change="filterUsers" />
-        Show Only Favourites
-      </label>
-    </div>
-    <UserList
-      :userList="filteredUsers"
-      :loading="loading"
-      @userClick="showUserDetails"
-      @favouriteToggle="toggleFavourite"
-    />
-    <button @click="sendUsers" type="button">Show more</button>
+    <section class="left-container">
+      <h2>User list</h2>
+      
+      <div class="search-container">
+        <input
+          id="search-input"
+          type="text"
+          v-model="searchText"
+          placeholder="Search by first or last name"
+          @input="filterUsers"
+        />
+        <select id="gender-filter" v-model="genderFilter" @change="filterUsers">
+          <option value="">All Genders</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+        <label>
+          <input type="checkbox" v-model="showFavouritesOnly" @change="filterUsers" />
+          Show Only Favourites
+        </label>
+      </div>
 
-    <UserDetails :selectedUser="selectedUser" />
+      <div class="user-list">
+        <UserList
+          :userList="filteredUsers"
+          :loading="loading"
+          @userClick="showUserDetails"
+          @favouriteToggle="toggleFavourite"
+        />
+        <button @click="sendUsers" type="button" class="more-results-button">
+          More results...
+        </button>
+      </div>
+    </section>
+    
+    <article class="right-container">
+      <UserDetails :selectedUser="selectedUser" />
+    </article>
   </div>
 </template>
 
@@ -169,15 +180,15 @@ const showUserDetails = (user: User) => {
 
 .MainContainer {
   display: flex;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 20px;  /* Space between the two containers */
 }
 
 .MainContainer button {
   padding: 10px 0px;
   width: 600px;
-  background-color: teal;
+  background-color: #abb8c3;
   border: none;
   color: white;
   font-size: 20px;
@@ -191,9 +202,51 @@ const showUserDetails = (user: User) => {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
+.left-container {
+  flex: 1;
+  /* min-width: 300px; */
+}
+
+.right-container {
+  flex: 0 0 400px; /* Fixed width for UserDetails */
+  margin-left: 20px;
+}
+
+.user-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.more-results-button {
+  align-self: center;
+  padding: 10px 0;
+  width: 600px;
+  background-color: #abb8c3;
+  border: none;
+  color: white;
+  font-size: 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.5s;
+}
+
+.more-results-button:hover {
+  background-color: darkcyan;
+}
+
 @media (max-width: 800px) {
+  .MainContainer {
+    flex-direction: column; /* Stack containers vertically on small screens */
+    align-items: center;
+  }
+
   .MainContainer button {
     width: 100%;
+  }
+
+  .right-container {
+    margin-left: 0; /* Remove margin on smaller screens */
   }
 }
 </style>

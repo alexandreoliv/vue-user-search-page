@@ -51,7 +51,7 @@ const toggleFavourite = (user: User) => {
   height: 600px;
   overflow-y: auto;
   position: relative;
-  background-color: teal;
+  background-color: #abb8c3;
   border-top-left-radius: 5px;
 }
 
