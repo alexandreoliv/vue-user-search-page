@@ -19,6 +19,8 @@ interface User {
   }
   email: string
   phone: string
+  favourite: boolean
+  tags?: string[]
 }
 
 defineProps<{
@@ -36,11 +38,18 @@ defineProps<{
         <img :src="selectedUser.picture.large" class="user-card_avatar_border" alt="user-avatar" />
       </div>
       <div class="user-card_content">
-        <h1>{{ selectedUser.name.first }} {{ selectedUser.name.last }}</h1>
+        <h1>{{ selectedUser.name.first }} {{ selectedUser.name.last }}<!--<span v-if="selectedUser.favourite" style="color: gold;">★</span>--></h1>
         <p class="user-card_id">🆔 {{ selectedUser.login.uuid }}</p>
         <p class="user-card_location">📍 {{ selectedUser.location.city }}, {{ selectedUser.location.country }}</p>
         <a :href="'mailto:' + selectedUser.email" class="user-card_email">✉️ {{ selectedUser.email }}</a>
         <p class="user-card_phone">📞 {{ selectedUser.phone }}</p>
+        <div class="user-tags">
+          <ul>
+            <li v-for="(tag, index) in selectedUser.tags || []" :key="index">
+              {{ tag }}
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
@@ -144,5 +153,22 @@ defineProps<{
   font-size: 14px;
   color: #333;
   margin-top: 10px;
+}
+
+.user-tags {
+  margin-top: 20px;
+}
+
+.user-tags ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.user-tags li {
+  display: inline-block;
+  background-color: #f0f0f0;
+  margin-right: 8px;
+  padding: 5px 10px;
+  border-radius: 16px;
 }
 </style>
