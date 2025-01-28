@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue'
+import { defineProps, defineEmits, ref } from 'vue'
 
 interface User {
   picture: {
@@ -11,6 +11,7 @@ interface User {
   }
   email: string
   favourite: boolean
+  tags?: string[]
 }
 
 defineProps<{
@@ -20,6 +21,7 @@ defineProps<{
 const emit = defineEmits<{
   (event: 'click'): void
   (event: 'favouriteToggle', user: User): void
+  (event: 'updateTags', user: User): void
 }>()
 
 const onCardClick = () => {
@@ -28,6 +30,30 @@ const onCardClick = () => {
 
 const toggleFavourite = (userItem: User) => {
   emit('favouriteToggle', userItem)
+}
+
+const activeTagIndex = ref<number | null>(null)
+
+const addTag = (userItem: User, tagValue: string) => {
+  if (!userItem.tags) userItem.tags = []
+  if (tagValue.trim() && !userItem.tags.includes(tagValue)) {
+    userItem.tags.push(tagValue.trim())
+    emit('updateTags', userItem)
+  }
+}
+
+const removeTag = (userItem: User, index: number) => {
+  if (userItem.tags) {
+    userItem.tags.splice(index, 1)
+    emit('updateTags', userItem)
+  }
+}
+
+const editTag = (userItem: User, index: number, newValue: string) => {
+  if (userItem.tags) {
+    userItem.tags[index] = newValue.trim()
+    emit('updateTags', userItem)
+  }
 }
 </script>
 
@@ -49,6 +75,36 @@ const toggleFavourite = (userItem: User) => {
         </p>
       </div>
       <p class="email">{{ userItem.email }}</p>
+
+      <div class="tags-input-container">
+        <div
+          class="tag"
+          v-for="(tag, index) in userItem.tags || []"
+          :key="'tag' + index"
+        >
+          <span
+            v-if="activeTagIndex !== index"
+            @click.stop="activeTagIndex = index"
+          >
+            {{ tag }}
+          </span>
+          <input
+            v-else
+            v-model="userItem.tags[index]"
+            @blur="editTag(userItem, index, userItem.tags[index]); activeTagIndex = null"
+            @keyup.enter="editTag(userItem, index, userItem.tags[index]); activeTagIndex = null"
+          />
+          <button @click.stop="removeTag(userItem, index)" class="delete-tag">
+            ✕
+          </button>
+        </div>
+        <input
+          class="new-tag-input"
+          type="text"
+          placeholder="Add a tag..."
+          @keyup.enter="addTag(userItem, $event.target.value); $event.target.value = ''"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -97,5 +153,44 @@ button span {
 
 .empty-star {
   color: #ccc;
+}
+
+.tags-input-container {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  display: flex;
+  align-items: center;
+  background: #e0e0e0;
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 14px;
+}
+
+.tag input {
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  outline: none;
+}
+
+.new-tag-input {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px;
+  font-size: 14px;
+  flex: 1;
+}
+
+.delete-tag {
+  background: none;
+  border: none;
+  font-size: 14px;
+  color: #ff4d4f;
+  cursor: pointer;
 }
 </style>

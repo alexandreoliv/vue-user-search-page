@@ -23,6 +23,7 @@ interface User {
   email: string
   phone: string
   favourite: boolean
+  tags?: string[]
 }
 
 const usersList = ref<User[]>([])
@@ -106,6 +107,15 @@ const toggleFavourite = (user: User) => {
   filterUsers() // Reapply filters
 }
 
+const updateTags = (user: User) => {
+  const updatedUsers = usersList.value.map(u =>
+    u.login.uuid === user.login.uuid ? user : u
+  )
+  usersList.value = updatedUsers
+  sessionStorage.setItem('usersList', JSON.stringify(usersList.value))
+  filterUsers() // Reapply filters
+}
+
 const filterUsers = () => {
   const text = searchText.value.toLowerCase()
   filteredUsers.value = usersList.value.filter((user) => {
@@ -152,6 +162,7 @@ const showUserDetails = (user: User) => {
           :loading="loading"
           @userClick="showUserDetails"
           @favouriteToggle="toggleFavourite"
+          @updateTags="updateTags"
         />
         <button @click="sendUsers" type="button" class="more-results-button">
           More results...

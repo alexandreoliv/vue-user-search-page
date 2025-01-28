@@ -8,7 +8,8 @@ interface User {
     uuid: string
   }
   favourite: boolean
-  [key: string]: any // To allow additional user properties
+  tags?: string[]
+  [key: string]: any
 }
 
 defineProps<{
@@ -19,6 +20,7 @@ defineProps<{
 const emit = defineEmits<{
   (event: 'userClick', user: User): void
   (event: 'favouriteToggle', user: User): void
+  (event: 'updateTags', user: User): void
 }>()
 
 const handleUserClick = (user: User) => {
@@ -26,8 +28,12 @@ const handleUserClick = (user: User) => {
 }
 
 const toggleFavourite = (user: User) => {
-  user.favourite = !user.favourite;
+  user.favourite = !user.favourite
   emit('favouriteToggle', user)
+}
+
+const updateTags = (user: User) => {
+  emit('updateTags', user)
 }
 </script>
 
@@ -39,6 +45,7 @@ const toggleFavourite = (user: User) => {
       :userItem="user"
       @click="handleUserClick(user)"
       @favouriteToggle="toggleFavourite"
+      @updateTags="updateTags"
     />
     <p class="msg" v-if="userList.length === 0 && !loading">The list is currently empty</p>
     <Loader v-if="loading" />
