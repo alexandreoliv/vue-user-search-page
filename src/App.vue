@@ -45,7 +45,7 @@ watch([searchText, genderFilter, showFavouritesOnly, selectedUser], () => {
 
 const sendUsers = async () => {
   loading.value = true
-  const response = await fetch('https://randomuser.me/api/?results=5')
+  const response = await fetch('https://randomuser.me/api/?results=5&inc=gender,name,picture,login,location,email,phone')
   const data = await response.json()
 
    // Ensure each user has the 'favourite' property
