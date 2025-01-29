@@ -38,6 +38,7 @@ const searchText = ref('')
 const genderFilter = ref('')
 const selectedUser = ref<User | null>(null)
 const showFavouritesOnly = ref<string>('')
+const showStatistics = ref(false)
 
 // Watch the state and save to sessionStorage
 watch([searchText, genderFilter, showFavouritesOnly, selectedUser], () => {
@@ -143,11 +144,20 @@ const filterUsers = () => {
 }
 
 const showUserDetails = (user: User) => {
+  showStatistics.value = false
   selectedUser.value = user
 }
 
 const closeUserDetails = () => {
   selectedUser.value = null
+}
+
+const toggleStatistics = () => {
+  // When statistics are toggled, close the user details if open
+  if (selectedUser.value) {
+    selectedUser.value = null
+  }
+  showStatistics.value = !showStatistics.value
 }
 </script>
 
@@ -174,6 +184,16 @@ const closeUserDetails = () => {
         </select>
       </div>
 
+      <div class="statistics-toggle-container">
+        <button 
+          @click="toggleStatistics" 
+          type="button" 
+          class="toggle-statistics-button" 
+          :disabled="usersList.length === 0">
+          {{ showStatistics ? 'Hide Statistics' : 'Show Statistics' }}
+        </button>
+      </div>
+
       <div class="user-list">
         <UserList
           :userList="filteredUsers"
@@ -189,10 +209,7 @@ const closeUserDetails = () => {
     
     <article class="right-container">
       <UserDetails :selectedUser="selectedUser" @close="closeUserDetails" />
-      <UserStatistics v-if="usersList.length > 0" :usersList="usersList" />
-      <div v-else>
-        <p>Waiting for data to calculate statistics...</p>
-      </div>
+      <UserStatistics v-if="showStatistics && usersList.length > 0" :usersList="usersList" />
     </article>
   </div>
 </template>
@@ -251,6 +268,34 @@ const closeUserDetails = () => {
 
 .more-results-button:hover {
   background-color: #767f86;
+}
+
+.statistics-toggle-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.toggle-statistics-button {
+  padding: 10px 0;
+  width: 90%;
+  background-color: #abb8c3;
+  border: none;
+  color: white;
+  font-size: 18px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.toggle-statistics-button:hover {
+  background-color: #767f86;
+}
+
+.toggle-statistics-button:disabled {
+  background-color: #d1d1d1;
+  cursor: not-allowed;
 }
 
 @media (min-width: 900px) {
