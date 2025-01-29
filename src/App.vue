@@ -3,33 +3,7 @@ import { ref, onMounted, watch } from 'vue'
 import UserList from './components/UserList.vue'
 import UserDetails from './components/UserDetails.vue'
 import UserStatistics from './components/UserStatistics.vue'
-
-interface User {
-  name: {
-    first: string
-    last: string
-  }
-  gender: string
-  picture: {
-    large: string
-  }
-  login: {
-    uuid: string
-  }
-  location: {
-    city: string
-    state: string
-    country: string
-  }
-  email: string
-  phone: string
-  favourite: boolean
-  tags?: string[]
-  dob: {
-    date: string
-    age: number
-  }
-}
+import type { User } from './types'
 
 const usersList = ref<User[]>([])
 const filteredUsers = ref<User[]>([])
@@ -56,7 +30,7 @@ const sendUsers = async () => {
   const data = await response.json()
 
    // Ensure each user has the 'favourite' property
-   const usersWithFavourite = data.results.map((user: any) => ({
+   const usersWithFavourite = data.results.map((user: User) => ({
     ...user,
     favourite: false
   }))
@@ -106,7 +80,7 @@ onMounted(() => {
 const toggleFavourite = (user: User) => {
   // Find the user in the usersList and toggle the favourite property
   const updatedUsers = usersList.value.map(u =>
-    u.login.uuid === user.login.uuid ? { ...u, favourite: u.favourite } : u
+    u.login.uuid === user.login.uuid ? { ...u, favourite: !u.favourite } : u
   )
   usersList.value = updatedUsers
   sessionStorage.setItem('usersList', JSON.stringify(usersList.value))

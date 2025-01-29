@@ -1,27 +1,6 @@
 <script setup lang="ts">
 import { defineProps } from 'vue'
-
-interface User {
-  name: {
-    first: string
-    last: string
-  }
-  picture: {
-    large: string
-  }
-  login: {
-    uuid: string
-  }
-  location: {
-    city: string
-    state: string
-    country: string
-  }
-  email: string
-  phone: string
-  favourite: boolean
-  tags?: string[]
-}
+import type { User } from '../types'
 
 defineProps<{
   selectedUser: User | null

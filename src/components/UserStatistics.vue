@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, defineProps, PropType } from 'vue'
-import { Bar, Pie } from 'vue-chartjs'
+import { computed, defineProps, type PropType } from 'vue'
+import { Bar } from 'vue-chartjs'
 import {
   Chart as ChartJS,
   Title,
@@ -11,13 +11,14 @@ import {
   LinearScale,
   ArcElement,
 } from 'chart.js'
+import type { User } from '../types'
 
 // Register Chart.js components
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement)
 
 const props = defineProps({
   usersList: {
-    type: Array as PropType<Array<any>>,
+    type: Array as PropType<User[]>,
     required: true,
   },
 })
@@ -126,11 +127,11 @@ const ageRangeData = computed(() => {
   }
 
 // Initialize a map to hold the count of each age range
-const ageRangeCount = {}
+const ageRangeCount: Record<string, number> = {}
 
 // Use the getAgeRange function to categorise users by age
 usersList.value.forEach(user => {
-  const age = user.dob?.age
+  const age = user.dob.age as number
   if (age !== undefined) {
     const range = getAgeRange(age) // Get the age range for each user
     ageRangeCount[range] = (ageRangeCount[range] || 0) + 1

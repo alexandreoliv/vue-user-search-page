@@ -1,22 +1,18 @@
 <script setup lang="ts">
-import { defineProps, defineEmits, ref } from 'vue'
+import { defineProps, defineEmits, ref, watchEffect } from 'vue'
+import type { User } from '../types'
 
-interface User {
-  picture: {
-    thumbnail: string
-  }
-  name: {
-    first: string
-    last: string
-  }
-  email: string
-  favourite: boolean
-  tags?: string[]
-}
-
-defineProps<{
+const props = defineProps<{
   userItem: User
 }>()
+
+// Create a local reactive copy of userItem
+const localUserItem = ref({ ...props.userItem })
+
+// Watch for changes to props.userItem and update the local copy if necessary
+watchEffect(() => {
+  localUserItem.value = { ...props.userItem }
+})
 
 const emit = defineEmits<{
   (event: 'click'): void
@@ -29,6 +25,7 @@ const onCardClick = () => {
 }
 
 const toggleFavourite = (userItem: User) => {
+  userItem.favourite = !userItem.favourite
   emit('favouriteToggle', userItem)
 }
 
@@ -59,27 +56,27 @@ const editTag = (userItem: User, index: number, newValue: string) => {
 
 <template>
   <div class="UserCard" @click="onCardClick">
-    <img :src="userItem.picture.thumbnail" alt="User Thumbnail" />
+    <img :src="localUserItem.picture.thumbnail" alt="User Thumbnail" />
     <div class="userCardInfo">
       <div class="user-name">
         <p>
-          <span class="bold-name">{{ userItem.name.first }} {{ userItem.name.last }}</span>
+          <span class="bold-name">{{ localUserItem.name.first }} {{ localUserItem.name.last }}</span>
           <!-- @click.stop prevents the UserDetails component from opening when clicking the Favourite button -->
           <button
-            @click.stop="toggleFavourite(userItem)"
-            :class="{ favourite: userItem.favourite }"
+            @click.stop="toggleFavourite(localUserItem)"
+            :class="{ favourite: localUserItem.favourite }"
             aria-label="Toggle favourite"
           >
-            <span :class="userItem.favourite ? 'filled-star' : 'empty-star'">★</span>
+            <span :class="localUserItem.favourite ? 'filled-star' : 'empty-star'">★</span>
           </button>
         </p>
       </div>
-      <p class="email">{{ userItem.email }}</p>
+      <p class="email">{{ localUserItem.email }}</p>
 
       <div class="tags-input-container" @click.stop>
         <div
           class="tag"
-          v-for="(tag, index) in userItem.tags || []"
+          v-for="(tag, index) in localUserItem.tags || []"
           :key="'tag' + index"
         >
           <span
@@ -91,11 +88,11 @@ const editTag = (userItem: User, index: number, newValue: string) => {
           <input
             maxlength="20"
             v-else
-            v-model="userItem.tags[index]"
-            @blur="editTag(userItem, index, userItem.tags[index]); activeTagIndex = null"
-            @keyup.enter="editTag(userItem, index, userItem.tags[index]); activeTagIndex = null"
+            v-model="localUserItem.tags[index]"
+            @blur="editTag(localUserItem, index, localUserItem.tags[index]); activeTagIndex = null"
+            @keyup.enter="editTag(localUserItem, index, localUserItem.tags[index]); activeTagIndex = null"
           />
-          <button @click.stop="removeTag(userItem, index)" class="delete-tag">
+          <button @click.stop="removeTag(localUserItem, index)" class="delete-tag">
             ✕
           </button>
         </div>
@@ -104,7 +101,7 @@ const editTag = (userItem: User, index: number, newValue: string) => {
           type="text"
           placeholder="Add a tag..."
           maxlength="20"
-          @keyup.enter="addTag(userItem, $event.target.value); $event.target.value = ''"
+          @keyup.enter="addTag(localUserItem, ($event.target as HTMLInputElement)?.value || ''); ($event.target as HTMLInputElement).value = ''"
         />
       </div>
     </div>

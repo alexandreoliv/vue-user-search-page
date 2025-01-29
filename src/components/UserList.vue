@@ -1,15 +1,7 @@
 <script setup lang="ts">
 import { defineProps, defineEmits } from 'vue'
 import UserCard from './UserCard.vue'
-
-interface User {
-  login: {
-    uuid: string
-  }
-  favourite: boolean
-  tags?: string[]
-  [key: string]: any
-}
+import type { User } from '../types'
 
 defineProps<{
   userList: User[]
@@ -26,7 +18,6 @@ const handleUserClick = (user: User) => {
 }
 
 const toggleFavourite = (user: User) => {
-  user.favourite = !user.favourite
   emit('favouriteToggle', user)
 }
 
