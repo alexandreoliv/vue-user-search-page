@@ -192,6 +192,7 @@ const closeUserDetails = () => {
 .search-container {
   display: flex;
   gap: 10px;
+  margin-top: 5px;
   margin-bottom: 15px;
 }
 

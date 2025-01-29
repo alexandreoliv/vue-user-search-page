@@ -89,6 +89,7 @@ const editTag = (userItem: User, index: number, newValue: string) => {
             {{ tag }}
           </span>
           <input
+            maxlength="20"
             v-else
             v-model="userItem.tags[index]"
             @blur="editTag(userItem, index, userItem.tags[index]); activeTagIndex = null"
@@ -137,6 +138,7 @@ const editTag = (userItem: User, index: number, newValue: string) => {
 
 .userCardInfo {
   margin-right: 20px;
+  width: 80%;
 }
 
 button {
@@ -170,6 +172,7 @@ button span {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  width: 80%;
 }
 
 .tag {
@@ -179,6 +182,7 @@ button span {
   border-radius: 4px;
   padding: 5px 10px;
   font-size: 14px;
+  color: #2c3e50;
 }
 
 .tag input {
@@ -194,6 +198,7 @@ button span {
   padding: 5px;
   font-size: 14px;
   flex: 1;
+  min-width: 100px;
 }
 
 .delete-tag {
@@ -207,5 +212,10 @@ button span {
 
 .bold-name {
   font-weight: bold;
+  color: #2c3e50;
+}
+
+.email {
+  color: #2c3e50;
 }
 </style>

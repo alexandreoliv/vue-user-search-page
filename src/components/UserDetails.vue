@@ -70,7 +70,7 @@ const closeUserDetails = () => {
 <style scoped>
 .user-card {
   display: flex;
-  cursor: pointer;
+  justify-content: center;
 }
 
 .user-card_avatar {
@@ -160,6 +160,7 @@ const closeUserDetails = () => {
 
 .user-tags {
   margin-top: 20px;
+  color: #2c3e50;
 }
 
 .user-tags ul {
@@ -177,6 +178,7 @@ const closeUserDetails = () => {
 
 .bold-name {
   font-weight: bold;
+  color: #2c3e50;
 }
 
 .filled-star {
