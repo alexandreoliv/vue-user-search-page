@@ -209,7 +209,7 @@ const toggleStatistics = () => {
     
     <article class="right-container">
       <UserDetails :selectedUser="selectedUser" @close="closeUserDetails" />
-      <UserStatistics v-if="showStatistics && usersList.length > 0" :usersList="usersList" />
+      <UserStatistics v-if="showStatistics && filteredUsers.length > 0" :usersList="filteredUsers" />
     </article>
   </div>
 </template>
