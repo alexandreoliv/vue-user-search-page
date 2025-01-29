@@ -46,7 +46,10 @@ const closeUserDetails = () => {
         <img :src="selectedUser.picture.large" class="user-card_avatar_border" alt="user-avatar" />
       </div>
       <div class="user-card_content">
-        <h1 class="bold-name">{{ selectedUser.name.first }} {{ selectedUser.name.last }}<!--<span v-if="selectedUser.favourite" style="color: gold;">★</span>--></h1>
+        <h1 class="bold-name">
+          {{ selectedUser.name.first }} {{ selectedUser.name.last }}
+          <span v-if="selectedUser.favourite" class="filled-star">★</span>
+        </h1>
         <p class="user-card_id">🆔 {{ selectedUser.login.uuid }}</p>
         <p class="user-card_location">📍 {{ selectedUser.location.city }}, {{ selectedUser.location.country }}</p>
         <a :href="'mailto:' + selectedUser.email" class="user-card_email">✉️ {{ selectedUser.email }}</a>
@@ -174,6 +177,12 @@ const closeUserDetails = () => {
 
 .bold-name {
   font-weight: bold;
+}
+
+.filled-star {
+  color: gold;
+  padding-left: 4px;
+  transform: translateY(3px);
 }
 
 .close-button {
