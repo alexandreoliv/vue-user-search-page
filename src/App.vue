@@ -32,7 +32,7 @@ const loading = ref(false)
 const searchText = ref('')
 const genderFilter = ref('')
 const selectedUser = ref<User | null>(null)
-const showFavouritesOnly = ref(false)
+const showFavouritesOnly = ref<string>('')
 
 // Watch the state and save to sessionStorage
 watch([searchText, genderFilter, showFavouritesOnly, selectedUser], () => {
@@ -122,7 +122,10 @@ const filterUsers = () => {
     const fullName = `${user.name.first} ${user.name.last}`.toLowerCase()
     const matchesName = fullName.includes(text)
     const matchesGender = genderFilter.value === '' || user.gender === genderFilter.value
-    const matchesFavourites = !showFavouritesOnly.value || user.favourite
+    const matchesFavourites =
+      showFavouritesOnly.value === '' ||
+      (showFavouritesOnly.value === 'true' && user.favourite) ||
+      (showFavouritesOnly.value === 'false' && !user.favourite)
     return matchesName && matchesGender && matchesFavourites
   })
 }
@@ -150,10 +153,11 @@ const showUserDetails = (user: User) => {
           <option value="male">Male</option>
           <option value="female">Female</option>
         </select>
-        <label>
-          <input type="checkbox" v-model="showFavouritesOnly" @change="filterUsers" />
-          Show Only Favourites
-        </label>
+        <select id="favourite-filter" v-model="showFavouritesOnly" @change="filterUsers">
+          <option value="">All Users</option>
+          <option value="true">Only Favourites</option>
+          <option value="false">No Favourites</option>
+        </select>
       </div>
 
       <div class="user-list">
