@@ -24,21 +24,29 @@ watch([searchText, genderFilter, showFavouritesOnly, selectedUser], () => {
   sessionStorage.setItem('filteredUsers', JSON.stringify(filteredUsers.value))
 }, { deep: true })
 
-const sendUsers = async () => {
+const fetchUsers = async () => {
   loading.value = true
-  const response = await fetch('https://randomuser.me/api/?results=5&inc=gender,name,picture,login,location,email,phone,dob')
-  const data = await response.json()
+  try {
+    const response = await fetch('https://randomuser.me/api/?results=5&inc=gender,name,picture,login,location,email,phone,dob')
+    if (!response.ok) {
+        throw new Error('Failed to fetch users');
+    }
+    const data = await response.json()
 
-   // Ensure each user has the 'favourite' property
-   const usersWithFavourite = data.results.map((user: User) => ({
-    ...user,
-    favourite: false
-  }))
+    // Ensure each user has the 'favourite' property
+    const usersWithFavourite = data.results.map((user: User) => ({
+      ...user,
+      favourite: false
+    }))
 
-  usersList.value = [...usersList.value, ...usersWithFavourite]
-  sessionStorage.setItem('usersList', JSON.stringify(usersList.value))
-  filterUsers() // Reapply filters to include the newly added users
-  loading.value = false
+    usersList.value = [...usersList.value, ...usersWithFavourite]
+    sessionStorage.setItem('usersList', JSON.stringify(usersList.value))
+    filterUsers() // Reapply filters to include the newly added users
+  } catch (error) {
+    console.error('Error fetching users:', error);
+  } finally {
+    loading.value = false;
+  }
 }
 
 onMounted(() => {
@@ -74,7 +82,7 @@ onMounted(() => {
   }
 
    // Only fetch new users if no users are saved in sessionStorage
-   savedUsersList ? filterUsers() : sendUsers()
+   savedUsersList ? filterUsers() : fetchUsers()
 })
 
 const toggleFavourite = (user: User) => {
@@ -175,7 +183,7 @@ const toggleStatistics = () => {
           @favouriteToggle="toggleFavourite"
           @updateTags="updateTags"
         />
-        <button @click="sendUsers" type="button" class="more-results-button" :disabled="loading">
+        <button @click="fetchUsers" type="button" class="more-results-button" :disabled="loading">
           {{ loading ? 'Loading...' : 'More results...' }}
         </button>
       </div>
