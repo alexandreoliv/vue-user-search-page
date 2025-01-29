@@ -201,7 +201,7 @@ const toggleStatistics = () => {
           @favouriteToggle="toggleFavourite"
           @updateTags="updateTags"
         />
-        <button @click="sendUsers" type="button" class="more-results-button">
+        <button @click="sendUsers" type="button" class="more-results-button" :disabled="loading">
           {{ loading ? 'Loading...' : 'More results...' }}
         </button>
       </div>
@@ -268,6 +268,11 @@ const toggleStatistics = () => {
 
 .more-results-button:hover {
   background-color: #767f86;
+}
+
+.more-results-button:disabled {
+  background-color: #d1d1d1;
+  cursor: not-allowed;
 }
 
 .statistics-toggle-container {
