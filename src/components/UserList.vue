@@ -50,7 +50,7 @@ const updateTags = (user: User) => {
 
 <style scoped>
 .UserList {
-  height: 80vh;
+  height: 75vh;
   overflow-y: auto;
   position: relative;
   border-top-left-radius: 5px;

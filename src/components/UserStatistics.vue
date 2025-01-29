@@ -22,6 +22,22 @@ const props = defineProps({
   },
 })
 
+const options = {
+  scales: {
+    y: {
+      ticks: {
+        stepSize: 1, // Forces the ticks to be integer values
+        beginAtZero: true,
+      },
+    },
+  },
+  plugins: {
+    legend: {
+      display: false, // Disable the legend (labels for each dataset)
+    },
+  },
+}
+
 // Utility function to determine the age range
 const getAgeRange = (age: number): string => {
   const ranges = [
@@ -136,27 +152,27 @@ return {
 </script>
 
 <template>
-    <div v-if="usersList && usersList.length > 0">
-  <div class="statistics-container" v-if="usersList.length > 0">
-    <h2>User Statistics</h2>
-    <div class="charts">
-      <div class="chart">
-        <h3>Users by Country</h3>
-        <Bar :data="countryData" />
-      </div>
-      <div class="chart">
-        <h3>Users by Gender</h3>
-        <Pie :data="genderData" />
-      </div>
-      <div class="chart">
-        <h3>Users by Age Range</h3>
-        <Bar :data="ageRangeData" />
+  <div v-if="usersList && usersList.length > 0">
+    <div class="statistics-container" v-if="usersList.length > 0">
+      <h2>User Statistics</h2>
+      <div class="charts">
+        
+        <div class="chart">
+          <h3>Users by Country</h3>
+          <Bar :data="countryData" :options="options" />
+        </div>
+      
+        <div class="chart">
+          <h3>Users by Gender</h3>
+          <Bar :data="genderData" :options="options" />
+        </div>
+      
+        <div class="chart">
+          <h3>Users by Age Range</h3>
+          <Bar :data="ageRangeData" :options="options" />
+        </div>
       </div>
     </div>
-  </div>
-    </div>
-  <div v-else class="loading">
-    <p>Loading user statistics...</p>
   </div>
 </template>
 
@@ -168,15 +184,31 @@ return {
 
 .charts {
   display: flex;
-  justify-content: space-around;
+  flex-direction: column; /* Stack the charts vertically */
   gap: 20px;
 }
 
 .chart {
-  width: 30%;
+  margin: 0 auto; /* Center the charts */
+  width: 50%;
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2c3e50;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  padding-bottom: 10px;
 }
 
 h3 {
-  margin-bottom: 10px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #34495e;
+  margin-top: 10px;
+  text-transform: capitalize;
+  letter-spacing: 1px;
+  padding-bottom: 5px;
 }
 </style>
