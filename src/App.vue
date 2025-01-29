@@ -2,6 +2,7 @@
 import { ref, onMounted, watch } from 'vue'
 import UserList from './components/UserList.vue'
 import UserDetails from './components/UserDetails.vue'
+import UserStatistics from './components/UserStatistics.vue'
 
 interface User {
   name: {
@@ -24,6 +25,10 @@ interface User {
   phone: string
   favourite: boolean
   tags?: string[]
+  dob: {
+    date: string
+    age: number
+  }
 }
 
 const usersList = ref<User[]>([])
@@ -46,7 +51,7 @@ watch([searchText, genderFilter, showFavouritesOnly, selectedUser], () => {
 
 const sendUsers = async () => {
   loading.value = true
-  const response = await fetch('https://randomuser.me/api/?results=5&inc=gender,name,picture,login,location,email,phone')
+  const response = await fetch('https://randomuser.me/api/?results=5&inc=gender,name,picture,login,location,email,phone,dob')
   const data = await response.json()
 
    // Ensure each user has the 'favourite' property
@@ -184,6 +189,10 @@ const closeUserDetails = () => {
     
     <article class="right-container">
       <UserDetails :selectedUser="selectedUser" @close="closeUserDetails" />
+      <UserStatistics v-if="usersList.length > 0" :usersList="usersList" />
+      <div v-else>
+        <p>Waiting for data to calculate statistics...</p>
+      </div>
     </article>
   </div>
 </template>
