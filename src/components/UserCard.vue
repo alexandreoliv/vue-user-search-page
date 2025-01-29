@@ -63,7 +63,7 @@ const editTag = (userItem: User, index: number, newValue: string) => {
     <div class="userCardInfo">
       <div class="user-name">
         <p>
-          <span>{{ userItem.name.first }} {{ userItem.name.last }}</span>
+          <span class="bold-name">{{ userItem.name.first }} {{ userItem.name.last }}</span>
           <!-- @click.stop prevents the UserDetails component from opening when clicking the Favourite button -->
           <button
             @click.stop="toggleFavourite(userItem)"
@@ -76,7 +76,7 @@ const editTag = (userItem: User, index: number, newValue: string) => {
       </div>
       <p class="email">{{ userItem.email }}</p>
 
-      <div class="tags-input-container">
+      <div class="tags-input-container" @click.stop>
         <div
           class="tag"
           v-for="(tag, index) in userItem.tags || []"
@@ -102,6 +102,7 @@ const editTag = (userItem: User, index: number, newValue: string) => {
           class="new-tag-input"
           type="text"
           placeholder="Add a tag..."
+          maxlength="20"
           @keyup.enter="addTag(userItem, $event.target.value); $event.target.value = ''"
         />
       </div>
@@ -130,7 +131,12 @@ const editTag = (userItem: User, index: number, newValue: string) => {
   width: 50px;
   height: 50px;
   border-radius: 50%;
+  margin-left: 2px;
   margin-right: 10px;
+}
+
+.userCardInfo {
+  margin-right: 20px;
 }
 
 button {
@@ -149,14 +155,18 @@ button span {
 
 .filled-star {
   color: gold;
+  padding-left: 4px;
+  transform: translateY(3px);
 }
 
 .empty-star {
   color: #ccc;
+  padding-left: 4px;
+  transform: translateY(3px);
 }
 
 .tags-input-container {
-  margin-top: 10px;
+  margin: 10px 0;
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -192,5 +202,10 @@ button span {
   font-size: 14px;
   color: #ff4d4f;
   cursor: pointer;
+  margin-left: 4px;
+}
+
+.bold-name {
+  font-weight: bold;
 }
 </style>

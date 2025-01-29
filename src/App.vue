@@ -138,14 +138,12 @@ const showUserDetails = (user: User) => {
 <template>
   <div class="MainContainer">
     <section class="left-container">
-      <h2>User list</h2>
-      
       <div class="search-container">
         <input
           id="search-input"
           type="text"
           v-model="searchText"
-          placeholder="Search by first or last name"
+          placeholder="Search by name"
           @input="filterUsers"
         />
         <select id="gender-filter" v-model="genderFilter" @change="filterUsers">
@@ -163,13 +161,12 @@ const showUserDetails = (user: User) => {
       <div class="user-list">
         <UserList
           :userList="filteredUsers"
-          :loading="loading"
           @userClick="showUserDetails"
           @favouriteToggle="toggleFavourite"
           @updateTags="updateTags"
         />
         <button @click="sendUsers" type="button" class="more-results-button">
-          More results...
+          {{ loading ? 'Loading...' : 'More results...' }}
         </button>
       </div>
     </section>
@@ -184,84 +181,100 @@ const showUserDetails = (user: User) => {
 .search-container {
   display: flex;
   gap: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 
 .search-container input,
 .search-container select {
   padding: 10px;
-  font-size: 16px;
+  font-size: 15px;
+  border-radius: 5px;
 }
 
 .MainContainer {
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
-  gap: 20px;  /* Space between the two containers */
-}
-
-.MainContainer button {
-  padding: 10px 0px;
-  width: 600px;
-  background-color: #abb8c3;
-  border: none;
-  color: white;
-  font-size: 20px;
-  border-radius: 0px 0px 5px 5px;
-  cursor: pointer;
-  transition: 0.5s;
-}
-
-.MainContainer h2 {
-  color: white;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  width: 95vw;
 }
 
 .left-container {
   flex: 1;
-  /* min-width: 300px; */
+  background-color: white;
+  padding: 0;
+  margin: 0;
 }
 
 .right-container {
-  flex: 0 0 400px; /* Fixed width for UserDetails */
-  margin-left: 20px;
+  flex: 1;
 }
 
 .user-list {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 15px; /* Distance to the "More results..." button */
 }
 
 .more-results-button {
   align-self: center;
   padding: 10px 0;
-  width: 600px;
+  width: 90%;
   background-color: #abb8c3;
   border: none;
   color: white;
   font-size: 20px;
   border-radius: 5px;
   cursor: pointer;
-  transition: 0.5s;
+  transition: 0.3s;
 }
 
 .more-results-button:hover {
-  background-color: darkcyan;
+  background-color: #767f86;
 }
 
-@media (max-width: 800px) {
+@media (min-width: 900px) {
   .MainContainer {
-    flex-direction: column; /* Stack containers vertically on small screens */
-    align-items: center;
+    gap: 30px;  /* Space between the two containers */
   }
 
-  .MainContainer button {
-    width: 100%;
+  .left-container {
+    width: 40%;
+    height: 100%;
+  }
+}
+
+@media (max-width: 899px) {
+  .MainContainer {
+    flex-direction: column; /* Stack the containers vertically */
+    align-items: center;
+    margin: 2%;
+    gap: 20px;  /* Space between the two containers */
   }
 
   .right-container {
-    margin-left: 0; /* Remove margin on smaller screens */
+    order: -1; /* Move the right-container to the top */
+    width: 90%;
+  }
+
+  .left-container {
+    order: 1; /* Make sure the left-container appears below the right-container */
+  }
+}
+
+@media (max-width: 1199px) {
+  .search-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .search-container > * { /* Targets direct children */
+    width: 90%;
+  }
+}
+
+@media (min-width: 1200px) {
+  .search-container {
+    justify-content: center;
   }
 }
 </style>

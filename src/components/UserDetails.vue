@@ -38,7 +38,7 @@ defineProps<{
         <img :src="selectedUser.picture.large" class="user-card_avatar_border" alt="user-avatar" />
       </div>
       <div class="user-card_content">
-        <h1>{{ selectedUser.name.first }} {{ selectedUser.name.last }}<!--<span v-if="selectedUser.favourite" style="color: gold;">★</span>--></h1>
+        <h1 class="bold-name">{{ selectedUser.name.first }} {{ selectedUser.name.last }}<!--<span v-if="selectedUser.favourite" style="color: gold;">★</span>--></h1>
         <p class="user-card_id">🆔 {{ selectedUser.login.uuid }}</p>
         <p class="user-card_location">📍 {{ selectedUser.location.city }}, {{ selectedUser.location.country }}</p>
         <a :href="'mailto:' + selectedUser.email" class="user-card_email">✉️ {{ selectedUser.email }}</a>
@@ -57,13 +57,8 @@ defineProps<{
 
 <style scoped>
 .user-card {
-  position: relative;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 20px auto;
   cursor: pointer;
-  max-width: 300px;
 }
 
 .user-card_avatar {
@@ -88,11 +83,7 @@ defineProps<{
 }
 
 .user-card_popup {
-  position: absolute;
-  top: 120px;
-  left: 50%;
-  transform: translateX(-50%) translateY(10px);
-  width: 350px;
+  position: relative;
   background: #fff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   border-radius: 10px;
@@ -167,8 +158,30 @@ defineProps<{
 .user-tags li {
   display: inline-block;
   background-color: #f0f0f0;
-  margin-right: 8px;
+  margin: 0 8px 10px 0;
   padding: 5px 10px;
   border-radius: 16px;
+}
+
+.bold-name {
+  font-weight: bold;
+}
+
+@media (min-width: 900px) {
+  .user-card {
+    position: relative;
+  }
+
+  .user-card_popup {
+    top: 8vh;
+    width: 30vw;
+  }
+}
+
+@media (max-width: 899px) {
+  .user-card {
+    position: relative;
+    justify-content: center;
+  }
 }
 </style>
