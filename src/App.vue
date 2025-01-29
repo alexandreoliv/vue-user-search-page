@@ -133,6 +133,10 @@ const filterUsers = () => {
 const showUserDetails = (user: User) => {
   selectedUser.value = user
 }
+
+const closeUserDetails = () => {
+  selectedUser.value = null
+}
 </script>
 
 <template>
@@ -172,7 +176,7 @@ const showUserDetails = (user: User) => {
     </section>
     
     <article class="right-container">
-      <UserDetails :selectedUser="selectedUser" />
+      <UserDetails :selectedUser="selectedUser" @close="closeUserDetails" />
     </article>
   </div>
 </template>

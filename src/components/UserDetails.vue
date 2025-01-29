@@ -26,6 +26,14 @@ interface User {
 defineProps<{
   selectedUser: User | null
 }>()
+
+const emit = defineEmits<{
+  (e: 'close'): void
+}>()
+
+const closeUserDetails = () => {
+  emit('close')
+}
 </script>
 
 <template>
@@ -51,6 +59,7 @@ defineProps<{
           </ul>
         </div>
       </div>
+      <button class="close-button" @click="closeUserDetails">×</button>
     </div>
   </div>
 </template>
@@ -165,6 +174,21 @@ defineProps<{
 
 .bold-name {
   font-weight: bold;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #000;
+  cursor: pointer;
+}
+
+.close-button:hover {
+  color: red;
 }
 
 @media (min-width: 900px) {
