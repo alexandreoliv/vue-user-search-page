@@ -1,15 +1,10 @@
 import { mount } from '@vue/test-utils'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import UserCard from '../UserCard.vue'
+import { users } from './testUsers'
 import type { User } from '../../types'
 
-const userItem: User = {
-  name: { first: 'John', last: 'Doe' },
-  email: 'john.doe@example.com',
-  picture: { thumbnail: 'path/to/thumbnail.jpg' },
-  favourite: false,
-  tags: ['tag1', 'tag2'],
-}
+const userItem: User = users[0]
 
 describe('UserCard.vue', () => {
   it('renders correctly with props', () => {
@@ -19,59 +14,67 @@ describe('UserCard.vue', () => {
 
     expect(wrapper.text()).toContain('John Doe')
     expect(wrapper.text()).toContain('john.doe@example.com')
-    expect(wrapper.find('img').attributes('src')).toBe('path/to/thumbnail.jpg')
-  })
-})
-
-it('toggles favourite status when button clicked', async () => {
-  const wrapper = mount(UserCard, {
-    props: { userItem },
+    expect(wrapper.find('img').attributes('src')).toBe(
+      'https://randomuser.me/api/portraits/thumb/men/1.jpg',
+    )
   })
 
-  const button = wrapper.find('button')
-  await button.trigger('click')
+  it('toggles favourite status when button clicked', async () => {
+    const wrapper = mount(UserCard, {
+      props: { userItem },
+    })
 
-  expect(wrapper.emitted().favouriteToggle).toBeTruthy()
-  expect(wrapper.emitted().favouriteToggle[0][0].favourite).toBe(true)
-})
+    const button = wrapper.find('button')
+    await button.trigger('click')
 
-it('adds a new tag and emits updateTags event', async () => {
-  const wrapper = mount(UserCard, {
-    props: { userItem },
+    expect(wrapper.emitted().favouriteToggle).toBeTruthy()
+    expect(wrapper.emitted().favouriteToggle[0][0].favourite).toBe(true)
   })
 
-  const input = wrapper.find('.new-tag-input')
-  await input.setValue('newTag')
-  await input.trigger('keyup.enter')
+  it('adds a new tag and emits updateTags event', async () => {
+    const wrapper = mount(UserCard, {
+      props: { userItem },
+    })
 
-  expect(wrapper.emitted().updateTags).toBeTruthy()
-  expect(wrapper.emitted().updateTags[0][0].tags).toContain('newTag')
-})
+    const input = wrapper.find('.new-tag-input')
+    await input.setValue('newTag')
+    await input.trigger('keyup.enter')
 
-it('removes a tag and emits updateTags event', async () => {
-  const wrapper = mount(UserCard, {
-    props: { userItem },
+    expect(wrapper.emitted().updateTags).toBeTruthy()
+    expect(wrapper.emitted().updateTags[0][0].tags).toContain('newTag')
   })
 
-  const removeButton = wrapper.find('.delete-tag')
-  await removeButton.trigger('click')
+  it('removes a tag and emits updateTags event', async () => {
+    // Create a copy of userItem and add 'tag1' to the tags array
+    const userItemWithTag = {
+      ...userItem,
+      tags: ['tag1'],
+    }
 
-  expect(wrapper.emitted().updateTags).toBeTruthy()
-  expect(wrapper.emitted().updateTags[0][0].tags).not.toContain('tag1')
-})
+    const wrapper = mount(UserCard, {
+      props: { userItem: userItemWithTag },
+    })
 
-it('edits a tag and emits updateTags event', async () => {
-  const wrapper = mount(UserCard, {
-    props: { userItem },
+    const removeButton = wrapper.find('.delete-tag')
+    await removeButton.trigger('click')
+
+    expect(wrapper.emitted().updateTags).toBeTruthy()
+    expect(wrapper.emitted().updateTags[0][0].tags).not.toContain('tag1')
   })
 
-  const tagText = wrapper.find('.tag span')
-  await tagText.trigger('click') // Activate input field
+  it('edits a tag and emits updateTags event', async () => {
+    const wrapper = mount(UserCard, {
+      props: { userItem },
+    })
 
-  const input = wrapper.find('.tag input')
-  await input.setValue('editedTag')
-  await input.trigger('blur')
+    const tagText = wrapper.find('.tag span')
+    await tagText.trigger('click') // Activate input field
 
-  expect(wrapper.emitted().updateTags).toBeTruthy()
-  expect(wrapper.emitted().updateTags[0][0].tags).toContain('editedTag')
+    const input = wrapper.find('.tag input')
+    await input.setValue('editedTag')
+    await input.trigger('blur')
+
+    expect(wrapper.emitted().updateTags).toBeTruthy()
+    expect(wrapper.emitted().updateTags[0][0].tags).toContain('editedTag')
+  })
 })

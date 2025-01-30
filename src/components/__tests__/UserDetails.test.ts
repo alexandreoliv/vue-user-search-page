@@ -1,18 +1,10 @@
 import { mount } from '@vue/test-utils'
 import { describe, it, expect, vi } from 'vitest'
 import UserDetails from '../UserDetails.vue'
+import { users } from './testUsers'
 import type { User } from '../../types'
 
-const selectedUser: User = {
-  name: { first: 'Jane', last: 'Doe' },
-  email: 'jane.doe@example.com',
-  picture: { large: 'path/to/large-thumbnail.jpg' },
-  favourite: true,
-  login: { uuid: '12345' },
-  location: { city: 'New York', country: 'USA' },
-  phone: '123-456-7890',
-  tags: ['tagA', 'tagB'],
-}
+const selectedUser: User = users[0]
 
 describe('UserDetails.vue', () => {
   it('renders user details correctly', () => {
@@ -20,13 +12,13 @@ describe('UserDetails.vue', () => {
       props: { selectedUser },
     })
 
-    expect(wrapper.text()).toContain('Jane Doe')
-    expect(wrapper.text()).toContain('🆔 12345')
+    expect(wrapper.text()).toContain('John Doe')
+    expect(wrapper.text()).toContain('🆔 1')
     expect(wrapper.text()).toContain('📍 New York, USA')
-    expect(wrapper.text()).toContain('✉️ jane.doe@example.com')
-    expect(wrapper.text()).toContain('📞 123-456-7890')
-    expect(wrapper.text()).toContain('tagA')
-    expect(wrapper.text()).toContain('tagB')
+    expect(wrapper.text()).toContain('✉️ john.doe@example.com')
+    expect(wrapper.text()).toContain('📞 (555) 123-4567')
+    expect(wrapper.text()).toContain('tag1')
+    expect(wrapper.text()).toContain('tag2')
   })
 })
 

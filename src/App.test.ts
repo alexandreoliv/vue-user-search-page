@@ -1,11 +1,12 @@
-import { mount } from '@vue/test-utils'
+import { mount, VueWrapper } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { nextTick } from 'vue'
 import App from './App.vue'
 import UserList from './components/UserList.vue'
+import { users } from './components/__tests__/testUsers'
 
 describe('App.vue', () => {
-  let wrapper
+  let wrapper: VueWrapper
 
   beforeEach(() => {
     sessionStorage.clear()
@@ -23,15 +24,7 @@ describe('App.vue', () => {
         ok: true,
         json: () =>
           Promise.resolve({
-            results: [
-              {
-                login: { uuid: '1' },
-                name: { first: 'John', last: 'Doe' },
-                gender: 'male',
-                picture: { thumbnail: 'path/to/thumbnail.jpg' },
-                favourite: false,
-              },
-            ],
+            results: users,
           }),
       }),
     )
@@ -41,16 +34,8 @@ describe('App.vue', () => {
   })
 
   it('toggles favourites correctly', async () => {
-    const user = {
-      login: { uuid: '1' },
-      name: { first: 'John', last: 'Doe' },
-      gender: 'male',
-      picture: { thumbnail: 'path/to/thumbnail.jpg' },
-      favourite: false,
-    }
-
-    wrapper.vm.usersList = [user]
-    await wrapper.vm.toggleFavourite(user)
+    wrapper.vm.usersList = [users[0]]
+    await wrapper.vm.toggleFavourite(users[0])
     expect(wrapper.vm.usersList[0].favourite).toBe(true)
   })
 
@@ -58,10 +43,7 @@ describe('App.vue', () => {
     sessionStorage.setItem('searchText', 'john')
     sessionStorage.setItem('genderFilter', 'male')
     sessionStorage.setItem('showFavouritesOnly', 'true')
-    sessionStorage.setItem(
-      'usersList',
-      JSON.stringify([{ login: { uuid: '1' }, name: { first: 'John', last: 'Doe' } }]),
-    )
+    sessionStorage.setItem('usersList', JSON.stringify([users[0]]))
 
     const newWrapper = mount(App)
     expect(newWrapper.vm.searchText).toBe('john')
@@ -76,22 +58,7 @@ describe('App.vue', () => {
     const mockResponse = {
       ok: true,
       json: vi.fn().mockResolvedValue({
-        results: [
-          {
-            name: { first: 'John', last: 'Doe' },
-            gender: 'male',
-            picture: { thumbnail: 'path/to/thumbnail.jpg' },
-            login: { uuid: '1' },
-            favourite: false,
-          },
-          {
-            name: { first: 'Jane', last: 'Doe' },
-            gender: 'female',
-            picture: { thumbnail: 'path/to/thumbnail.jpg' },
-            login: { uuid: '2' },
-            favourite: false,
-          },
-        ],
+        results: users,
       }),
     }
     global.fetch = vi.fn().mockResolvedValue(mockResponse)
