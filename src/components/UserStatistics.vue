@@ -42,21 +42,21 @@ const options = {
 // Utility function to determine the age range
 const getAgeRange = (age: number): string => {
   const ranges = [
-    { min: 0, max: 5, label: '0-5' },
-    { min: 5, max: 10, label: '5-10' },
-    { min: 10, max: 15, label: '10-15' },
-    { min: 15, max: 20, label: '15-20' },
-    { min: 20, max: 25, label: '20-25' },
-    { min: 25, max: 30, label: '25-30' },
-    { min: 30, max: 35, label: '30-35' },
-    { min: 35, max: 40, label: '35-40' },
-    { min: 40, max: 45, label: '40-45' },
-    { min: 45, max: 50, label: '45-50' },
-    { min: 50, max: 55, label: '50-55' },
-    { min: 55, max: 60, label: '55-60' },
+    { min: 0, max: 4, label: '0-4' },
+    { min: 5, max: 9, label: '5-9' },
+    { min: 10, max: 14, label: '10-14' },
+    { min: 15, max: 19, label: '15-19' },
+    { min: 20, max: 24, label: '20-24' },
+    { min: 25, max: 29, label: '25-29' },
+    { min: 30, max: 34, label: '30-34' },
+    { min: 35, max: 39, label: '35-39' },
+    { min: 40, max: 44, label: '40-44' },
+    { min: 45, max: 49, label: '45-49' },
+    { min: 50, max: 54, label: '50-54' },
+    { min: 55, max: 59, label: '55-59' },
     { min: 60, max: Infinity, label: '60+' },
   ]
-  return ranges.find((range) => age >= range.min && age < range.max)!.label
+  return ranges.find((range) => age >= range.min && age <= range.max)!.label
 }
 
 // Ensure usersList is not undefined or empty
