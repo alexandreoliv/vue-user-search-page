@@ -27,7 +27,7 @@ watch([searchText, genderFilter, showFavouritesOnly, selectedUser], () => {
 const fetchUsers = async () => {
   loading.value = true
   try {
-    const response = await fetch('https://randomuser.me/api/?results=5&inc=gender,name,picture,login,location,email,phone,dob')
+    const response = await fetch('https://randomuser.me/api/?results=25&inc=gender,name,picture,login,location,email,phone,dob')
     if (!response.ok) {
         throw new Error('Failed to fetch users');
     }
