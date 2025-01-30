@@ -26,9 +26,9 @@ describe('UserCard.vue', () => {
 
     const button = wrapper.find('button')
     await button.trigger('click')
-
-    expect(wrapper.emitted().favouriteToggle).toBeTruthy()
-    expect(wrapper.emitted().favouriteToggle[0][0].favourite).toBe(true)
+    const emittedFavouriteToggle = wrapper.emitted().favouriteToggle as [{ favourite: boolean }]
+    expect(emittedFavouriteToggle).toBeTruthy()
+    expect(emittedFavouriteToggle[0].favourite).toBe(true)
   })
 
   it('adds a new tag and emits updateTags event', async () => {
@@ -40,12 +40,12 @@ describe('UserCard.vue', () => {
     await input.setValue('newTag')
     await input.trigger('keyup.enter')
 
-    expect(wrapper.emitted().updateTags).toBeTruthy()
-    expect(wrapper.emitted().updateTags[0][0].tags).toContain('newTag')
+    const emittedUpdateTags = wrapper.emitted().updateTags as [{ tags: string[] }]
+    expect(emittedUpdateTags).toBeTruthy()
+    expect(emittedUpdateTags[0].tags).toContain('newTag')
   })
 
   it('removes a tag and emits updateTags event', async () => {
-    // Create a copy of userItem and add 'tag1' to the tags array
     const userItemWithTag = {
       ...userItem,
       tags: ['tag1'],
@@ -58,8 +58,9 @@ describe('UserCard.vue', () => {
     const removeButton = wrapper.find('.delete-tag')
     await removeButton.trigger('click')
 
-    expect(wrapper.emitted().updateTags).toBeTruthy()
-    expect(wrapper.emitted().updateTags[0][0].tags).not.toContain('tag1')
+    const emittedUpdateTags = wrapper.emitted().updateTags as [{ tags: string[] }]
+    expect(emittedUpdateTags).toBeTruthy()
+    expect(emittedUpdateTags[0].tags).not.toContain('tag1')
   })
 
   it('edits a tag and emits updateTags event', async () => {
@@ -74,7 +75,8 @@ describe('UserCard.vue', () => {
     await input.setValue('editedTag')
     await input.trigger('blur')
 
-    expect(wrapper.emitted().updateTags).toBeTruthy()
-    expect(wrapper.emitted().updateTags[0][0].tags).toContain('editedTag')
+    const emittedUpdateTags = wrapper.emitted().updateTags as [{ tags: string[] }]
+    expect(emittedUpdateTags).toBeTruthy()
+    expect(emittedUpdateTags[0].tags).toContain('editedTag')
   })
 })

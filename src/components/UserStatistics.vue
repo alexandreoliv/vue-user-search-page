@@ -160,17 +160,17 @@ return {
         
         <div class="chart">
           <h3>Users by Country</h3>
-          <Bar :data="countryData" :options="options" />
+          <Bar ref="barChart" :data="countryData" :options="options" />
         </div>
       
         <div class="chart">
           <h3>Users by Gender</h3>
-          <Bar :data="genderData" :options="options" />
+          <Bar ref="barChart" :data="genderData" :options="options" />
         </div>
       
         <div class="chart">
           <h3>Users by Age Range</h3>
-          <Bar :data="ageRangeData" :options="options" />
+          <Bar ref="barChart" :data="ageRangeData" :options="options" />
         </div>
       </div>
     </div>

@@ -5,12 +5,23 @@ import App from './App.vue'
 import UserList from './components/UserList.vue'
 import { users } from './components/__tests__/testUsers'
 
+// Define the component instance type
+type AppComponentInstance = InstanceType<typeof App> & {
+  searchText: string
+  genderFilter: string
+  showFavouritesOnly: boolean
+  usersList: typeof users
+  fetchUsers: () => Promise<void>
+  toggleFavourite: (user: typeof users[0]) => Promise<void>
+  filteredUsers: typeof users
+}
+
 describe('App.vue', () => {
-  let wrapper: VueWrapper
+  let wrapper: VueWrapper<AppComponentInstance>
 
   beforeEach(() => {
     sessionStorage.clear()
-    wrapper = mount(App)
+    wrapper = mount(App) as VueWrapper<AppComponentInstance>
   })
 
   it('renders the app correctly', () => {
@@ -19,14 +30,15 @@ describe('App.vue', () => {
   })
 
   it('fetches users on mount', async () => {
-    global.fetch = vi.fn(() =>
-      Promise.resolve({
-        ok: true,
-        json: () =>
-          Promise.resolve({
-            results: users,
-          }),
-      }),
+    global.fetch = vi.fn(
+      () =>
+        Promise.resolve({
+          ok: true,
+          json: () =>
+            Promise.resolve({
+              results: users,
+            }),
+        } as unknown as Response), // Cast to 'unknown' first, then 'Response'
     )
 
     await wrapper.vm.fetchUsers()
@@ -45,7 +57,7 @@ describe('App.vue', () => {
     sessionStorage.setItem('showFavouritesOnly', 'true')
     sessionStorage.setItem('usersList', JSON.stringify([users[0]]))
 
-    const newWrapper = mount(App)
+    const newWrapper = mount(App) as VueWrapper<AppComponentInstance>
     expect(newWrapper.vm.searchText).toBe('john')
     expect(newWrapper.vm.genderFilter).toBe('male')
     expect(newWrapper.vm.showFavouritesOnly).toBe(true)
@@ -60,7 +72,7 @@ describe('App.vue', () => {
       json: vi.fn().mockResolvedValue({
         results: users,
       }),
-    }
+    } as unknown as Response
     global.fetch = vi.fn().mockResolvedValue(mockResponse)
 
     await wrapper.vm.fetchUsers()

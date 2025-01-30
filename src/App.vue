@@ -81,8 +81,12 @@ onMounted(() => {
     filteredUsers.value = JSON.parse(savedFilteredUsers)
   }
 
-   // Only fetch new users if no users are saved in sessionStorage
-   savedUsersList ? filterUsers() : fetchUsers()
+  // Only fetch new users if no users are saved in sessionStorage
+  if (savedUsersList) {
+    filterUsers();
+  } else {
+    fetchUsers();
+  }
 })
 
 const toggleFavourite = (user: User) => {
